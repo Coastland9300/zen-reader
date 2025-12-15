@@ -16,23 +16,24 @@ export const Settings: React.FC = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 space-y-6 pt-24 animate-fade-in">
-       <button 
+    <div className="library-container animate-fade-in" style={{ maxWidth: '42rem', margin: '0 auto', paddingTop: '6rem' }}>
+      <button
         onClick={() => setView('library')}
-        className="flex items-center text-sm text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-white mb-4 transition-colors"
+        className="btn-text flex items-center mb-4"
+        style={{ paddingLeft: 0 }}
       >
-        <ArrowLeft size={16} className="mr-1" /> Назад в библиотеку
+        <ArrowLeft size={16} className="mr-2" /> Назад в библиотеку
       </button>
 
-      <GlassCard className="p-8">
-        <h2 className="text-2xl font-semibold mb-2 text-zinc-900 dark:text-zinc-100">Настройки</h2>
-        <p className="text-zinc-500 dark:text-zinc-400 mb-8">
+      <GlassCard className="p-4" style={{ padding: '2rem' }}>
+        <h2 className="text-2xl font-semibold mb-2">Настройки</h2>
+        <p className="text-muted mb-4">
           Настройте интеграцию с Telegram для синхронизации прогресса чтения между устройствами через сообщения бота.
         </p>
 
-        <div className="space-y-6">
+        <div className="flex flex-col gap-4">
           <div>
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+            <label className="block text-sm font-medium mb-2">
               Токен бота (Bot Token)
             </label>
             <input
@@ -40,13 +41,13 @@ export const Settings: React.FC = () => {
               value={token}
               onChange={(e) => setToken(e.target.value)}
               placeholder="123456789:ABCdef..."
-              className="w-full px-4 py-3 rounded-xl bg-white/50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-zinc-900 dark:text-white"
+              className="input-field"
             />
-            <p className="text-xs text-zinc-400 mt-2">Можно получить в @BotFather</p>
+            <p className="text-xs text-muted mt-2">Можно получить в @BotFather</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+            <label className="block text-sm font-medium mb-2">
               ID чата (Chat ID)
             </label>
             <input
@@ -54,18 +55,16 @@ export const Settings: React.FC = () => {
               value={chatId}
               onChange={(e) => setChatId(e.target.value)}
               placeholder="12345678"
-              className="w-full px-4 py-3 rounded-xl bg-white/50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-zinc-900 dark:text-white"
+              className="input-field"
             />
-            <p className="text-xs text-zinc-400 mt-2">Ваш User ID или Channel ID</p>
+            <p className="text-xs text-muted mt-2">Ваш User ID или Channel ID</p>
           </div>
 
           <div className="pt-4 flex justify-end">
             <button
               onClick={handleSave}
-              className={`
-                flex items-center px-6 py-3 rounded-xl font-medium text-white transition-all
-                ${saved ? 'bg-green-500' : 'bg-zinc-900 dark:bg-white dark:text-zinc-900 hover:opacity-90'}
-              `}
+              className={`btn ${saved ? 'btn-primary' : 'btn-primary'}`}
+              style={{ backgroundColor: saved ? '#22c55e' : 'var(--accent-color)' }}
             >
               {saved ? <Check size={18} className="mr-2" /> : <Save size={18} className="mr-2" />}
               {saved ? 'Сохранено' : 'Сохранить'}

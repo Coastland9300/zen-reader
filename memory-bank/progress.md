@@ -8,7 +8,9 @@
     - [x] Memory Bank structure created
     - [x] User rules documented
     - [x] Documentation templates created (`changelog`, `tasktracker`)
-    - [ ] Initial Git Commit
+    - [x] Initial Git Commit
+    - [x] Refactoring: Tailwind -> Vanilla CSS
+    - [x] Theme Implementation (Light/Dark)
 
 - [ ] **Core Features** (TBD)
     - [ ] PDF Rendering implementation

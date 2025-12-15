@@ -12,14 +12,14 @@ pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.vers
 export const PDFReader: React.FC = () => {
   const { activeBookId, books, updateProgress, setView, settings } = useStore();
   const book = books.find((b) => b.id === activeBookId);
-  
+
   const [pdfData, setPdfData] = useState<string | null>(null);
   const [numPages, setNumPages] = useState<number>(0);
   const [scale, setScale] = useState(1.0);
   const [loading, setLoading] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
-  
+
   // To handle container resizing for responsiveness
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState<number>(800);
@@ -53,7 +53,7 @@ export const PDFReader: React.FC = () => {
         setContainerWidth(entries[0].contentRect.width);
       }
     });
-    
+
     if (containerRef.current) {
       observer.observe(containerRef.current);
     }
@@ -75,7 +75,7 @@ export const PDFReader: React.FC = () => {
     if (!book) return;
     const newPage = Math.min(Math.max(1, book.currentPage + offset), numPages);
     updateProgress(book.id, newPage, numPages);
-    
+
     // Scroll to top of viewer
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -88,7 +88,7 @@ export const PDFReader: React.FC = () => {
 
     setIsSyncing(true);
     const message = `📖 Я читаю: "${book.title}"\n📍 Страница ${book.currentPage} из ${numPages} (${book.progressPercent}%)`;
-    
+
     try {
       const url = `https://api.telegram.org/bot${settings.telegramBotToken}/sendMessage`;
       await fetch(url, {
@@ -111,49 +111,53 @@ export const PDFReader: React.FC = () => {
   if (!book) return <div>Книга не найдена</div>;
 
   return (
-    <div className="min-h-screen bg-zinc-100 dark:bg-black pb-20">
+    <div className="reader-container min-h-screen pb-20">
       {/* Top Bar */}
-      <div className="fixed top-0 left-0 right-0 z-50 px-4 py-3 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-lg border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
-        <button 
+      <div className="reader-header">
+        <button
           onClick={() => setView('library')}
-          className="p-2 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+          className="btn btn-icon"
           title="Назад в библиотеку"
+          style={{ width: '40px', height: '40px' }} // slight override for header
         >
-          <ArrowLeft className="text-zinc-700 dark:text-zinc-200" size={20} />
+          <ArrowLeft size={20} />
         </button>
-        
+
         <div className="flex flex-col items-center">
-          <h1 className="text-sm font-semibold text-zinc-900 dark:text-white max-w-[200px] truncate">
+          <h1 className="text-sm font-semibold truncate max-w-[200px]">
             {book.title}
           </h1>
-          <span className="text-xs text-zinc-500">
+          <span className="text-xs text-muted">
             {book.currentPage} из {numPages}
           </span>
         </div>
 
         <div className="flex gap-2">
-            <button
-                onClick={() => setScale(s => Math.max(0.5, s - 0.1))}
-                className="p-2 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200"
-                title="Уменьшить"
-            >
-                <ZoomOut size={18} />
-            </button>
-            <button
-                onClick={() => setScale(s => Math.min(2.5, s + 0.1))}
-                className="p-2 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200"
-                title="Увеличить"
-            >
-                <ZoomIn size={18} />
-            </button>
-            <button
-                onClick={syncToTelegram}
-                disabled={isSyncing}
-                className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors disabled:opacity-50"
-                title="Отправить прогресс в Telegram"
-            >
-                {isSyncing ? <Loader2 className="animate-spin" size={18} /> : <Send size={18} />}
-            </button>
+          <button
+            onClick={() => setScale(s => Math.max(0.5, s - 0.1))}
+            className="btn btn-icon"
+            title="Уменьшить"
+            style={{ width: '36px', height: '36px' }}
+          >
+            <ZoomOut size={18} />
+          </button>
+          <button
+            onClick={() => setScale(s => Math.min(2.5, s + 0.1))}
+            className="btn btn-icon"
+            title="Увеличить"
+            style={{ width: '36px', height: '36px' }}
+          >
+            <ZoomIn size={18} />
+          </button>
+          <button
+            onClick={syncToTelegram}
+            disabled={isSyncing}
+            className="btn btn-primary"
+            style={{ padding: '0.5rem', borderRadius: '50%', width: '36px', height: '36px' }}
+            title="Отправить прогресс в Telegram"
+          >
+            {isSyncing ? <Loader2 className="animate-spin" size={18} /> : <Send size={18} />}
+          </button>
         </div>
       </div>
 
@@ -161,20 +165,20 @@ export const PDFReader: React.FC = () => {
       <div className="pt-20 px-4 flex justify-center w-full min-h-[500px]" ref={containerRef}>
         {loading ? (
           <div className="flex flex-col items-center mt-20">
-            <Loader2 className="animate-spin text-zinc-400 mb-2" size={32} />
-            <p className="text-zinc-500">Загрузка PDF...</p>
+            <Loader2 className="animate-spin text-muted mb-2" size={32} />
+            <p className="text-muted">Загрузка PDF...</p>
           </div>
         ) : loadError ? (
-           <GlassCard className="p-8 flex flex-col items-center justify-center h-fit mt-10">
-             <AlertCircle size={48} className="text-red-500 mb-4" />
-             <h3 className="text-lg font-medium text-zinc-900 dark:text-white">Не удалось открыть книгу</h3>
-             <p className="text-zinc-500 dark:text-zinc-400 text-center mt-2 max-w-xs">{loadError}</p>
-             <p className="text-xs text-zinc-400 mt-4 font-mono bg-zinc-100 dark:bg-zinc-800 p-2 rounded">
-                Worker: {pdfjs.GlobalWorkerOptions.workerSrc}
-             </p>
-           </GlassCard>
+          <GlassCard className="p-8 flex flex-col items-center justify-center h-fit mt-10">
+            <AlertCircle size={48} style={{ color: 'var(--danger)' }} className="mb-4" />
+            <h3 className="text-lg font-medium">Не удалось открыть книгу</h3>
+            <p className="text-muted text-center mt-2 max-w-xs">{loadError}</p>
+            <p className="text-xs text-muted mt-4 font-mono p-2 rounded" style={{ background: 'var(--bg-app)' }}>
+              Worker: {pdfjs.GlobalWorkerOptions.workerSrc}
+            </p>
+          </GlassCard>
         ) : (
-          <GlassCard className="p-0 overflow-hidden inline-block shadow-2xl bg-white">
+          <GlassCard className="p-0 overflow-hidden inline-block shadow-2xl" style={{ backgroundColor: '#fff' }}>
             {pdfData && (
               <Document
                 file={pdfData}
@@ -182,23 +186,23 @@ export const PDFReader: React.FC = () => {
                 onLoadError={onDocumentLoadError}
                 loading={
                   <div className="h-[600px] w-[400px] flex items-center justify-center">
-                    <Loader2 className="animate-spin text-zinc-400" />
+                    <Loader2 className="animate-spin text-muted" />
                   </div>
                 }
                 error={
-                    <div className="flex flex-col items-center justify-center p-10 text-zinc-500">
-                        <AlertCircle size={40} className="mb-4" />
-                        <p>Ошибка отображения</p>
-                    </div>
+                  <div className="flex flex-col items-center justify-center p-10 text-muted">
+                    <AlertCircle size={40} className="mb-4" />
+                    <p>Ошибка отображения</p>
+                  </div>
                 }
                 className="flex justify-center"
               >
-                <Page 
-                    pageNumber={book.currentPage} 
-                    width={Math.min(containerWidth - 40, 800) * scale}
-                    renderTextLayer={false} 
-                    renderAnnotationLayer={false}
-                    className="shadow-inner"
+                <Page
+                  pageNumber={book.currentPage}
+                  width={Math.min(containerWidth - 40, 800) * scale}
+                  renderTextLayer={false}
+                  renderAnnotationLayer={false}
+                  className="shadow-inner"
                 />
               </Document>
             )}
@@ -209,22 +213,22 @@ export const PDFReader: React.FC = () => {
       {/* Bottom Controls */}
       <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
         <GlassCard className="flex items-center gap-6 px-6 py-3 rounded-full">
-          <button 
+          <button
             onClick={() => changePage(-1)}
             disabled={book.currentPage <= 1}
-            className="p-2 rounded-full hover:bg-zinc-200 dark:hover:bg-white/10 disabled:opacity-30 transition-colors text-zinc-800 dark:text-white"
+            className="btn btn-icon border-0 bg-transparent hover:bg-black/5 dark:hover:bg-white/10"
           >
             <ChevronLeft size={24} />
           </button>
-          
-          <div className="text-sm font-medium text-zinc-600 dark:text-zinc-300 w-16 text-center">
-             {Math.round((book.currentPage / numPages) * 100) || 0}%
+
+          <div className="text-sm font-medium w-16 text-center">
+            {Math.round((book.currentPage / numPages) * 100) || 0}%
           </div>
 
-          <button 
+          <button
             onClick={() => changePage(1)}
             disabled={book.currentPage >= numPages}
-            className="p-2 rounded-full hover:bg-zinc-200 dark:hover:bg-white/10 disabled:opacity-30 transition-colors text-zinc-800 dark:text-white"
+            className="btn btn-icon border-0 bg-transparent hover:bg-black/5 dark:hover:bg-white/10"
           >
             <ChevronRight size={24} />
           </button>

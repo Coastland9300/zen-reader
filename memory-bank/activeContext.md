@@ -4,13 +4,14 @@
 Инициализация проекта и настройка документации (Context Initialization).
 
 ## Последние изменения
-- [2025-12-15] Создание структуры Memory Bank и Docs.
-- [2025-12-15] Добавление правил пользователя в `projectbrief.md`.
+- [2025-12-15] Refactoring to Vanilla CSS.
+- Implemented Light/Dark theme system via CSS Variables.
+- Removed Tailwind CDN.
 
 ## Следующие шаги
-1. Завершить создание файлов документации (`progress.md`, `changelog.md`, `tasktracker.md`).
-2. Закоммитить изменения (Initial commit for docs).
-3. Ждать указаний по функционалу приложения.
+1. Установка зависимостей (`npm install`).
+2. Запуск dev-сервера и проверка UI.
+3. Доработка функционала PDF (Worker).
 
 ## Открытые вопросы
 - Уточнить требования по дизайну (чистый CSS или подключить что-то еще, хотя по дефолту Vanilla).
