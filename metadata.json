@@ -1,0 +1,5 @@
+{
+  "name": "Zen Reader",
+  "description": "Минималистичная PDF-читалка в стиле Apple с библиотекой, локальным хранением и синхронизацией прогресса через Telegram.",
+  "requestFramePermissions": []
+}
